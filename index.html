@@ -1,0 +1,2008 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MuseumLog — A logbook for your museum visits</title>
+<meta name="description" content="MuseumLog turns every gallery trip into a beautifully illustrated entry — photos, companions, exhibitions, and the favourite piece you won't shut up about." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --ink: #111111;
+    --ink-soft: #2c2c2c;
+    --muted: #6b6b6b;
+    --hairline: #e6e6e6;
+    --bg: #ffffff;
+    --bg-alt: #f5f5f5;
+    --accent: #f5482a;
+    --lavender: #efeaff;
+    --lavender-soft: #f6f3ff;
+    --shadow: 0 24px 60px rgba(17,17,17,0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── Top nav ─── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,0.86);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid transparent;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    max-width: 1380px;
+    margin: 0 auto;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .app-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--ink);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 2px 8px rgba(17,17,17,0.18);
+  }
+  .app-icon svg { width: 22px; height: 22px; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .pill:hover { transform: translateY(-1px); background: #000; }
+  .pill.outline { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .pill.outline:hover { background: var(--ink); color: #fff; }
+
+  /* ─── Hero ─── */
+  .hero {
+    text-align: center;
+    padding: 90px 0 40px;
+  }
+  .hero-icon {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    background: var(--ink);
+    margin: 0 auto 14px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 18px 40px rgba(17,17,17,0.18);
+  }
+  .hero-icon svg { width: 56px; height: 56px; }
+  .hero-app-label {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 36px;
+  }
+  h1, h2, h3 {
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  h1 {
+    font-size: clamp(40px, 6.4vw, 84px);
+    font-weight: 900;
+    line-height: 1.04;
+    margin: 0 auto 24px;
+    max-width: 1080px;
+  }
+  h1 em {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin: 0 auto 36px;
+  }
+  .badges {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .store-badge {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 12px;
+    padding: 10px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: transform 0.15s ease;
+  }
+  .store-badge:hover { transform: translateY(-2px); }
+  .store-badge svg { width: 24px; height: 24px; flex-shrink: 0; }
+  .store-badge .small { font-size: 10px; opacity: 0.85; line-height: 1.1; }
+  .store-badge .big { font-size: 17px; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; }
+  .web-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 14px;
+    padding: 8px 16px;
+    margin-top: 6px;
+    text-align: left;
+  }
+  .web-pill .small { font-size: 11px; opacity: 0.85; line-height: 1.1; }
+  .web-pill .big { font-size: 15px; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; }
+
+  /* ─── Phone ─── */
+  .phone {
+    width: 240px;
+    aspect-ratio: 240 / 490;
+    border-radius: 38px;
+    background: #0a0a0a;
+    box-shadow: 0 18px 60px rgba(17,17,17,0.18), inset 0 0 0 2px #1a1a1a;
+    padding: 8px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .phone .screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background: #fbfbfb;
+    overflow: hidden;
+    position: relative;
+  }
+  .phone .notch {
+    position: absolute;
+    top: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 24px;
+    background: #0a0a0a;
+    border-radius: 14px;
+    z-index: 3;
+  }
+  .phone .status {
+    position: absolute;
+    top: 8px; left: 12px; right: 12px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 4;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .hero-phone-wrap {
+    margin-top: 80px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ─── Phone showcase row ─── */
+  .phones-row {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    padding: 60px 24px 80px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .phones-row::-webkit-scrollbar { display: none; }
+
+  /* Mock screens — MuseumLog UI snippets */
+  .ml-page {
+    height: 100%;
+    width: 100%;
+    background: #f7f4ee;
+    padding: 38px 14px 14px;
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .ml-pillchip {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 9px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .ml-h {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.05;
+    margin: 8px 0 12px;
+  }
+  .ml-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .ml-yearcard {
+    background: var(--lavender);
+    border: 1px solid #fff;
+    border-radius: 18px;
+    padding: 12px 10px;
+    height: 168px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 14px rgba(17,17,17,0.06);
+  }
+  .ml-yearcard .yp {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 9px;
+    padding: 2px 10px;
+    font-weight: 600;
+  }
+  .ml-doodles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: 100%;
+    flex: 1;
+    align-content: center;
+    padding: 8px 4px;
+  }
+  .ml-doodle {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(245,72,42,0.25);
+    border-radius: 8px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    color: var(--accent);
+  }
+  .ml-doodle svg { width: 16px; height: 16px; }
+  .ml-takephoto {
+    margin-top: 18px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 14px;
+    padding: 12px 14px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* polaroid sheet */
+  .ml-polaroid {
+    background: #fff;
+    border-radius: 14px;
+    padding: 8px 8px 26px;
+    transform: rotate(-3deg);
+    box-shadow: 0 10px 24px rgba(17,17,17,0.16);
+    margin: 24px auto 0;
+    width: 84%;
+  }
+  .ml-poimg {
+    background: linear-gradient(135deg, #b6c8a6, #d8c39a);
+    border-radius: 6px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 13px;
+  }
+  .ml-museum-italic {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 22px;
+    text-align: center;
+    margin-top: 28px;
+    color: var(--ink);
+  }
+
+  /* passport */
+  .ml-section-h {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+  .ml-stamps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .ml-stamp {
+    background: #fff;
+    border: 1px dashed rgba(17,17,17,0.25);
+    border-radius: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    box-shadow: 0 2px 0 rgba(17,17,17,0.05);
+  }
+  .ml-stamp .city {
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .ml-stamp .name {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 11px;
+    line-height: 1.05;
+    margin: 2px 0;
+  }
+  .ml-stamp .icon {
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  /* globe */
+  .ml-globe-wrap {
+    margin: 18px auto 0;
+    width: 88%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at 50% 50%, #f7f4ee 60%, #efe9dd 100%);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--hairline);
+    position: relative;
+  }
+  .ml-globe-svg { width: 96%; height: 96%; }
+
+  /* visit detail */
+  .ml-vd-section {
+    background: var(--lavender-soft);
+    border: 1px solid #fff;
+    border-radius: 14px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 0 rgba(17,17,17,0.04);
+  }
+  .ml-vd-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+  }
+  .ml-vd-row + .ml-vd-row { padding-top: 6px; border-top: 1px solid #fff; margin-top: 6px; }
+  .ml-vd-row .label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .ml-vd-row .val { font-weight: 600; }
+  .ml-stars { color: var(--accent); }
+
+  /* companions */
+  .ml-companion-row {
+    display: flex;
+    align-items: center;
+    gap: -8px;
+    margin-top: 6px;
+  }
+  .ml-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    border: 2px solid #fff;
+    margin-left: -6px;
+  }
+  .ml-avatar:first-child { margin-left: 0; }
+
+  /* ─── trusted by ─── */
+  .trusted {
+    text-align: center;
+    padding: 10px 0 80px;
+  }
+  .trusted .label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .trusted-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+    color: #444;
+  }
+  .trusted-name {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 22px;
+    color: #555;
+    opacity: 0.9;
+  }
+
+  /* ─── features ─── */
+  .features {
+    background: var(--bg-alt);
+    padding: 110px 0;
+  }
+  .features h2 {
+    text-align: center;
+    font-size: clamp(34px, 4.5vw, 56px);
+    font-weight: 900;
+    margin: 0 0 60px;
+    letter-spacing: -0.025em;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .feature-card {
+    background: #fff;
+    border-radius: 22px;
+    padding: 30px 30px 0;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+  }
+  .feature-card.wide {
+    grid-column: span 2;
+  }
+  .feature-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  .feature-card p {
+    color: var(--ink-soft);
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+  .feature-art {
+    margin-top: auto;
+    align-self: center;
+    margin-top: 28px;
+    margin-bottom: 0;
+  }
+
+  /* mini visuals inside cards */
+  .mini-yearcards {
+    display: flex;
+    gap: 10px;
+    transform: translateY(8px);
+  }
+  .mini-yc {
+    width: 100px;
+    height: 130px;
+    border-radius: 14px;
+    background: rgba(245,72,42,0.10);
+    border: 1px solid #fff;
+    box-shadow: 0 6px 14px rgba(17,17,17,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 6px;
+  }
+  .mini-yc .yp {
+    background: var(--ink);
+    color: #fff;
+    font-size: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .mini-yc.active { background: rgba(245,72,42,0.22); }
+  .mini-yc.dim { background: rgba(17,17,17,0.05); }
+
+  .mini-passport {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+  .mini-passport .ml-stamp { font-size: 10px; padding: 10px 6px; background: #fafafa; }
+
+  .mini-flip {
+    position: relative;
+    width: 200px;
+    height: 240px;
+    margin: 0 auto;
+  }
+  .mini-flip .face {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 14px 30px rgba(17,17,17,0.18);
+    transform: rotate(-4deg);
+    padding: 10px 10px 30px;
+  }
+  .mini-flip .face .pic {
+    background: linear-gradient(135deg, #cbb5e0, #e1c9b0);
+    border-radius: 8px;
+    width: 100%;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 13px;
+  }
+  .mini-themes {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+  }
+  .swatch {
+    width: 64px; height: 64px; border-radius: 16px;
+    box-shadow: inset 0 0 0 1px rgba(17,17,17,0.08), 0 6px 14px rgba(17,17,17,0.08);
+    display: grid;
+    place-items: center;
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: #fff;
+    font-size: 18px;
+  }
+  .swatch.red { background: var(--accent); }
+  .swatch.blue { background: #3a4ec7; }
+  .swatch.grey { background: #5d5d5d; }
+
+  .mini-companions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+  }
+  .big-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+    display: grid;
+    place-items: center;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(17,17,17,0.1);
+  }
+  .big-avatar.a { background: var(--accent); }
+  .big-avatar.b { background: #3a4ec7; }
+  .big-avatar.c { background: #5d5d5d; }
+
+  .mini-globe {
+    width: 220px; height: 220px;
+    border: 1.4px solid var(--ink);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 40% 30%, transparent 60%, rgba(17,17,17,0.04) 100%),
+      var(--bg);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .mini-globe::before, .mini-globe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1.2px solid rgba(17,17,17,0.6);
+    border-radius: 50%;
+  }
+  .mini-globe::before { transform: scaleX(0.35); }
+  .mini-globe::after { transform: scaleY(0.35); }
+
+  /* ─── testimonials ─── */
+  .testimonials {
+    padding: 110px 0;
+    text-align: center;
+    position: relative;
+  }
+  .testimonials h2 {
+    font-size: clamp(34px, 4.5vw, 56px);
+    font-weight: 900;
+    margin: 0 0 60px;
+    letter-spacing: -0.025em;
+  }
+  .quote-mark {
+    width: 36px; height: 36px;
+    margin: 0 auto 24px;
+    color: var(--ink);
+  }
+  .quote-text {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 720px;
+    margin: 0 auto 28px;
+  }
+  .quote-attr {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .quote-name {
+    font-weight: 700;
+    color: var(--ink);
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    margin: 8px 0 4px;
+  }
+  .testi-arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: calc(100% - 48px);
+    left: 24px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .arrow {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    pointer-events: all;
+    transition: transform 0.15s ease;
+  }
+  .arrow:hover { transform: scale(1.06); border-color: var(--ink); }
+
+  /* ─── FAQ ─── */
+  .faq {
+    background: var(--bg-alt);
+    padding: 110px 0;
+  }
+  .faq h2 {
+    text-align: center;
+    font-size: clamp(34px, 4.5vw, 56px);
+    font-weight: 900;
+    margin: 0 0 60px;
+    letter-spacing: -0.025em;
+  }
+  .faq-list {
+    max-width: 720px;
+    margin: 0 auto;
+    border-top: 1px solid var(--hairline);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--hairline);
+  }
+  .faq-q {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: 22px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: inherit;
+  }
+  .faq-q .chev { transition: transform 0.2s ease; }
+  .faq-item.open .faq-q .chev { transform: rotate(180deg); }
+  .faq-a {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .faq-item.open .faq-a {
+    max-height: 400px;
+    padding: 0 0 22px;
+  }
+
+  /* ─── footer ─── */
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding: 50px 0 40px;
+    color: var(--ink);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+  .footer-left { max-width: 420px; }
+  .footer-tag {
+    margin: 18px 0 14px;
+    font-size: 14px;
+  }
+  .footer-build {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .footer-copy {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 14px;
+  }
+  .footer-right a {
+    display: block;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 4px 0;
+  }
+  .footer-right a:hover { color: var(--ink); }
+
+
+  /* ─── Free tool — t-shirt designer ─── */
+  .tool {
+    background: #fff;
+    padding: 110px 0 110px;
+    border-top: 1px solid var(--hairline);
+  }
+  .tool-head {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .tool-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--lavender);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+  }
+  .tool h2 {
+    font-size: clamp(34px, 4.5vw, 56px);
+    font-weight: 900;
+    margin: 0 0 18px;
+    letter-spacing: -0.025em;
+  }
+  .tool h2 em {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .tool-sub {
+    color: var(--ink-soft);
+    font-size: 17px;
+    line-height: 1.6;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .designer-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .designer-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  .panel {
+    background: var(--bg-alt);
+    border-radius: 22px;
+    padding: 26px;
+  }
+  .panel h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+  .panel + .panel { margin-top: 18px; }
+  .input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .text-input {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .text-input:focus { border-color: var(--ink); }
+  .add-btn {
+    padding: 12px 18px;
+    border: none;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 12px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .suggestions {
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    margin-top: -6px;
+    margin-bottom: 12px;
+    max-height: 220px;
+    overflow-y: auto;
+    box-shadow: 0 8px 22px rgba(17,17,17,0.06);
+    display: none;
+  }
+  .suggestions.show { display: block; }
+  .suggestion {
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 14px;
+  }
+  .suggestion:last-child { border-bottom: 0; }
+  .suggestion:hover { background: var(--bg-alt); }
+  .suggestion .city { color: var(--muted); font-size: 12px; }
+  .museum-list { list-style: none; margin: 0; padding: 0; }
+  .museum-list li {
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .museum-list .city { font-size: 12px; color: var(--muted); }
+  .remove-btn {
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .remove-btn:hover { color: var(--accent); background: rgba(245,72,42,0.08); }
+  .empty-list {
+    color: var(--muted);
+    font-size: 13px;
+    font-style: italic;
+    padding: 8px 0;
+  }
+  .colour-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .colour-swatch {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    border: 1px solid var(--hairline);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.12s ease;
+  }
+  .colour-swatch:hover { transform: scale(1.06); }
+  .colour-swatch.active::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--ink);
+    border-radius: 17px;
+  }
+  .colour-swatch[data-colour="white"] { background: #f5f3ee; }
+  .colour-swatch[data-colour="cream"] { background: #e6dbc4; }
+  .colour-swatch[data-colour="black"] { background: #111111; }
+  .meta-input { display: grid; grid-template-columns: 1fr 100px; gap: 10px; }
+  .stage { position: sticky; top: 100px; }
+  .tshirt-wrap {
+    background: linear-gradient(180deg, #fafafa, #f0eee9);
+    border-radius: 22px;
+    padding: 20px 20px 28px;
+    text-align: center;
+  }
+  .tshirt-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .tshirt-tab {
+    background: transparent;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .tshirt-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #capture {
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 540px;
+    aspect-ratio: 4 / 5;
+    background: transparent;
+    display: grid;
+    place-items: center;
+  }
+  .tshirt-stage {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .tshirt-stage svg { width: 100%; height: 100%; display: block; }
+  .tour-art {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    text-align: center;
+    color: var(--ink);
+    pointer-events: none;
+  }
+  .tour-art.back-art { top: 24%; width: 64%; }
+  .tour-art.is-dark { color: #ece6d6; }
+  .tour-art .stamp {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: clamp(14px, 1.6vw, 18px);
+    margin-bottom: 6px;
+    opacity: 0.85;
+  }
+  .tour-art .title {
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+    font-size: clamp(14px, 1.7vw, 20px);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .tour-art .year {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .tour-art .divider {
+    width: 60%;
+    height: 1px;
+    background: currentColor;
+    margin: 6px auto 12px;
+    opacity: 0.5;
+  }
+  .tour-art .museum {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: clamp(11px, 1.05vw, 14px);
+    line-height: 1.45;
+  }
+  .tour-art .museum .city {
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+    margin-right: 8px;
+  }
+  .footer-mark {
+    position: absolute;
+    bottom: 14%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    opacity: 0.55;
+    font-weight: 600;
+  }
+  .cta-row {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .pill.outline {
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .preorder {
+    margin-top: 56px;
+    text-align: center;
+    background: var(--bg-alt);
+    border-radius: 22px;
+    padding: 50px 32px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .preorder h3 {
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 900;
+    margin: 0 0 10px;
+    letter-spacing: -0.02em;
+  }
+  .preorder p {
+    color: var(--ink-soft);
+    margin: 0 0 22px;
+  }
+  .email-form {
+    display: flex;
+    gap: 8px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .email-form input {
+    flex: 1;
+    padding: 13px 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+  }
+  .email-form input:focus { border-color: var(--ink); }
+  .email-form button {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 20px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .preorder small {
+    display: block;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    box-shadow: 0 12px 30px rgba(17,17,17,0.18);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .feature-grid { grid-template-columns: 1fr; }
+    .feature-card.wide { grid-column: span 1; }
+    .phones-row { gap: 18px; padding: 40px 16px 60px; }
+    .phone { width: 200px; }
+    .hero { padding: 56px 0 30px; }
+    .hero-icon { width: 76px; height: 76px; border-radius: 18px; }
+    .hero-icon svg { width: 44px; height: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ───── Top Nav ───── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="brand">
+      <span class="app-icon" aria-hidden="true">
+        <!-- museum / columns glyph -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 4l9 5.5"/>
+          <path d="M5 11v8M9 11v8M15 11v8M19 11v8"/>
+          <path d="M3 21h18"/>
+        </svg>
+      </span>
+      MuseumLog
+    </a>
+    <a href="#download" class="pill">Download now</a>
+  </div>
+</nav>
+
+<!-- ───── Hero ───── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9.5L12 4l9 5.5"/>
+        <path d="M5 11v8M9 11v8M15 11v8M19 11v8"/>
+        <path d="M3 21h18"/>
+      </svg>
+    </div>
+    <div class="hero-app-label">MuseumLog</div>
+
+    <h1>Every gallery you've ever <em>loved.</em></h1>
+
+    <p class="hero-sub">
+      MuseumLog turns each visit into a beautifully illustrated entry —
+      photos, companions, exhibitions, and the favourite piece you won't
+      shut up about. Letterboxd, but for museums.
+    </p>
+
+    <div class="badges" id="download">
+      <a href="#" class="store-badge" aria-label="Download on the App Store">
+        <svg viewBox="0 0 24 24" fill="white" aria-hidden="true">
+          <path d="M16.365 1.43c0 1.14-.41 2.23-1.16 3.08-.85.96-2.21 1.7-3.51 1.6-.16-1.13.39-2.3 1.13-3.13.84-.95 2.27-1.66 3.54-1.55zm4.7 17.55c-.66 1.55-1.45 2.95-2.79 4.78-.93 1.27-2.2 2.85-3.78 2.86-1.4 0-1.76-.92-3.66-.91-1.9.01-2.29.93-3.69.92-1.58-.01-2.78-1.43-3.71-2.7C2.9 21.36 2 17.6 3.74 14.94c1.18-1.79 3.06-2.93 4.85-2.93 1.7 0 2.79.93 3.97.93 1.16 0 2.04-.94 3.97-.94 1.5.01 3.06.81 4.18 2.21-3.66 2-3.07 7.21-.7 8.77z"/>
+        </svg>
+        <span>
+          <span class="small">Download on the</span><br/>
+          <span class="big">App Store</span>
+        </span>
+      </a>
+    </div>
+
+    <a href="#tour" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:999px;padding:10px 20px;font-size:14px;font-weight:600;text-decoration:none;transition:transform 0.15s ease;" onmouseover="this.style.background='var(--ink)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--ink)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/></svg>
+      Free tool — design your tour t-shirt
+    </a>
+
+    <!-- hero phone -->
+    <div class="hero-phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status"><span>9:41</span><span>● ●●● ▮</span></div>
+        <div class="screen">
+          <div class="ml-page">
+            <div style="text-align:left">
+              <span class="ml-pillchip">Logbook</span>
+              <div class="ml-h">A year in galleries.</div>
+            </div>
+            <div class="ml-yearcard">
+              <div class="yp">2026</div>
+              <div class="ml-doodles">
+                <div class="ml-doodle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21h18M5 11l7-7 7 7M7 11v10M17 11v10"/></svg></div>
+                <div class="ml-doodle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M8 12l3 3 5-6"/></svg></div>
+                <div class="ml-doodle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7l9-4 9 4M5 7v12M19 7v12M3 19h18"/></svg></div>
+                <div class="ml-doodle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h7"/></svg></div>
+                <div class="ml-doodle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+                <div class="ml-doodle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
+              </div>
+            </div>
+            <div class="ml-takephoto">+ Add visit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Phone showcase row ───── -->
+<section class="phones-row">
+  <!-- 1 — YearDetailView -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:41</span><span>● ●●● ▮</span></div>
+    <div class="screen">
+      <div class="ml-page" style="text-align:center">
+        <div class="ml-sub">3 days ago</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin:8px 0">
+          <div style="width:14px;height:14px;border-radius:4px;background:#ddd;border:1px solid #fff"></div>
+          <div style="width:18px;height:18px;border-radius:5px;background:rgba(245,72,42,0.25);border:1px solid #fff"></div>
+          <div style="width:14px;height:14px;border-radius:4px;background:#ddd;border:1px solid #fff"></div>
+        </div>
+        <div class="ml-polaroid">
+          <div class="ml-poimg">Rothko</div>
+        </div>
+        <div class="ml-museum-italic">Tate Modern</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 — Visit detail -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:41</span><span>● ●●● ▮</span></div>
+    <div class="screen">
+      <div class="ml-page">
+        <div class="ml-sub" style="margin-bottom:4px">Saturday, 2 May 2026</div>
+        <div class="ml-vd-section">
+          <div class="ml-vd-row"><span class="label">Museum</span><span class="val">Tate Modern</span></div>
+          <div class="ml-vd-row"><span class="label">Exhibition</span><span class="val">Rothko Rooms</span></div>
+        </div>
+        <div class="ml-vd-section">
+          <div class="ml-vd-row"><span class="label">Rating</span><span class="ml-stars">★★★★★</span></div>
+        </div>
+        <div class="ml-vd-section">
+          <div class="ml-vd-row"><span class="label">With</span></div>
+          <div class="ml-companion-row">
+            <div class="ml-avatar">SR</div>
+            <div class="ml-avatar" style="background:#3a4ec7">JM</div>
+            <div class="ml-avatar" style="background:#5d5d5d">AB</div>
+          </div>
+        </div>
+        <div class="ml-vd-section" style="background:#fff">
+          <div class="ml-section-h">Favourite piece</div>
+          <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:14px">Light Red Over Black</div>
+          <div style="font-size:10px;color:var(--muted)">Mark Rothko, 1957</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 — Passport -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:41</span><span>● ●●● ▮</span></div>
+    <div class="screen">
+      <div class="ml-page">
+        <div class="ml-section-h">Europe</div>
+        <div class="ml-stamps">
+          <div class="ml-stamp"><div class="city">London</div><div class="name">Tate Modern</div><div class="icon">●</div></div>
+          <div class="ml-stamp"><div class="city">Paris</div><div class="name">Pompidou</div><div class="icon">◆</div></div>
+          <div class="ml-stamp"><div class="city">Madrid</div><div class="name">Reina Sofía</div><div class="icon">◇</div></div>
+          <div class="ml-stamp"><div class="city">Berlin</div><div class="name">Hamburger Bahnhof</div><div class="icon">▲</div></div>
+          <div class="ml-stamp"><div class="city">Vienna</div><div class="name">Belvedere</div><div class="icon">▼</div></div>
+          <div class="ml-stamp"><div class="city">Amsterdam</div><div class="name">Stedelijk</div><div class="icon">★</div></div>
+        </div>
+        <div class="ml-section-h">N. America</div>
+        <div class="ml-stamps">
+          <div class="ml-stamp"><div class="city">New York</div><div class="name">MoMA</div><div class="icon">●</div></div>
+          <div class="ml-stamp"><div class="city">L.A.</div><div class="name">The Broad</div><div class="icon">◇</div></div>
+          <div class="ml-stamp"><div class="city">Chicago</div><div class="name">AIC</div><div class="icon">★</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 — Globe -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:41</span><span>● ●●● ▮</span></div>
+    <div class="screen">
+      <div class="ml-page" style="text-align:center">
+        <div class="ml-section-h">12 cities · 7 countries</div>
+        <div class="ml-globe-wrap">
+          <svg class="ml-globe-svg" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="86" fill="none" stroke="#111" stroke-width="1"/>
+            <ellipse cx="100" cy="100" rx="86" ry="32" fill="none" stroke="#111" stroke-width="1"/>
+            <ellipse cx="100" cy="100" rx="32" ry="86" fill="none" stroke="#111" stroke-width="1"/>
+            <ellipse cx="100" cy="100" rx="60" ry="86" fill="none" stroke="#111" stroke-width="0.6"/>
+            <ellipse cx="100" cy="100" rx="86" ry="60" fill="none" stroke="#111" stroke-width="0.6"/>
+            <circle cx="64" cy="78" r="3" fill="#f5482a"/>
+            <circle cx="118" cy="92" r="3" fill="#f5482a"/>
+            <circle cx="86" cy="138" r="3" fill="#f5482a"/>
+            <circle cx="142" cy="118" r="3" fill="#f5482a"/>
+          </svg>
+        </div>
+        <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;margin-top:14px">Where you've wandered.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 — Profile / themes -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>9:41</span><span>● ●●● ▮</span></div>
+    <div class="screen">
+      <div class="ml-page">
+        <div class="ml-section-h">Logbook colour</div>
+        <div class="ml-vd-section">
+          <div class="ml-vd-row">
+            <span class="val">Red biro</span>
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 1px var(--ink)"></div>
+          </div>
+          <div class="ml-vd-row">
+            <span style="color:var(--muted)">Blue biro</span>
+            <div style="width:18px;height:18px;border-radius:50%;background:#3a4ec7"></div>
+          </div>
+          <div class="ml-vd-row">
+            <span style="color:var(--muted)">Greyscale</span>
+            <div style="width:18px;height:18px;border-radius:50%;background:#5d5d5d"></div>
+          </div>
+        </div>
+        <div class="ml-section-h" style="margin-top:14px">Logbook font</div>
+        <div class="ml-vd-section">
+          <div class="ml-vd-row"><span class="val" style="font-family:'Playfair Display',serif;font-style:italic">Serif</span></div>
+          <div class="ml-vd-row"><span style="font-family:monospace">Mono</span></div>
+          <div class="ml-vd-row"><span style="font-family:'Futura',sans-serif;letter-spacing:0.04em">Bauhaus</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Trusted by ───── -->
+<section class="trusted">
+  <div class="container">
+    <div class="label">trusted by curators &amp; gallery-goers at</div>
+    <div class="trusted-row">
+      <span class="trusted-name">Tate</span>
+      <span class="trusted-name">MoMA</span>
+      <span class="trusted-name">Pompidou</span>
+      <span class="trusted-name">Guggenheim</span>
+      <span class="trusted-name">Reina Sofía</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Features ───── -->
+<section class="features">
+  <div class="container">
+    <h2>A logbook worth keeping.</h2>
+    <div class="feature-grid">
+
+      <!-- 1: Year carousel -->
+      <div class="feature-card">
+        <h3>One year, at a glance</h3>
+        <p>Every visit lands inside its year card — a hand-drawn grid of the museums you saw, ready to flip through.</p>
+        <div class="feature-art">
+          <div class="mini-yearcards">
+            <div class="mini-yc dim"><div class="yp">2024</div></div>
+            <div class="mini-yc active"><div class="yp">2026</div></div>
+            <div class="mini-yc dim"><div class="yp">2025</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: Polaroid flip card -->
+      <div class="feature-card">
+        <h3>Polaroid flip cards</h3>
+        <p>Tap to see the photo. Tap again for the date, exhibition, rating, who came with you, and the piece that stopped you in your tracks.</p>
+        <div class="feature-art">
+          <div class="mini-flip">
+            <div class="face">
+              <div class="pic">Rothko</div>
+              <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:13px;text-align:center;margin-top:10px;color:#444">Tate Modern</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: Passport -->
+      <div class="feature-card">
+        <h3>A passport for galleries</h3>
+        <p>Stamps for every museum, grouped by continent. The world map you actually want to fill in.</p>
+        <div class="feature-art" style="width:100%">
+          <div class="mini-passport">
+            <div class="ml-stamp"><div class="city">London</div><div class="name">Tate</div><div class="icon">●</div></div>
+            <div class="ml-stamp"><div class="city">Paris</div><div class="name">Pompidou</div><div class="icon">◆</div></div>
+            <div class="ml-stamp"><div class="city">Berlin</div><div class="name">Hamburger</div><div class="icon">▲</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: Themes & fonts (wide) -->
+      <div class="feature-card wide">
+        <h3>Make it yours</h3>
+        <p>Three ink colours. Three Logbook fonts — serif, monospace, Bauhaus. Pick the typography that matches your handwriting.</p>
+        <div class="feature-art" style="width:100%">
+          <div class="mini-themes">
+            <div class="swatch red">A</div>
+            <div class="swatch blue">A</div>
+            <div class="swatch grey">A</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: Companions -->
+      <div class="feature-card">
+        <h3>Who came with you</h3>
+        <p>Tag the friends, dates, and family who shared the day. Their initials sit on every card forever.</p>
+        <div class="feature-art" style="width:100%">
+          <div class="mini-companions">
+            <div class="big-avatar a">SR</div>
+            <div class="big-avatar b">JM</div>
+            <div class="big-avatar c">AB</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6: Globe -->
+      <div class="feature-card">
+        <h3>A wireframe of where you've been</h3>
+        <p>A stylised spinning globe pinned with every museum you've logged. Slow on purpose.</p>
+        <div class="feature-art">
+          <div class="mini-globe"></div>
+        </div>
+      </div>
+
+      <!-- 7: Photos (wide) -->
+      <div class="feature-card wide">
+        <h3>The photos you actually took</h3>
+        <p>Pinch-zoom your snaps full-screen. Multi-photo grids on the cards. Local-first storage so your library never bloats your iCloud.</p>
+        <div class="feature-art" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;max-width:480px">
+          <div style="aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#cbb5e0,#e1c9b0)"></div>
+          <div style="aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#b6c8a6,#d8c39a)"></div>
+          <div style="aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#f5482a,#f8a08a)"></div>
+          <div style="aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#3a4ec7,#7185da)"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ───── Testimonials ───── -->
+<section class="testimonials">
+  <div class="container">
+    <h2>What our gallery-goers say</h2>
+
+    <div id="testi-stage">
+      <svg class="quote-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M7 17h3l2-4V7H6v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z"/>
+      </svg>
+      <p class="quote-text" id="quote-text">I used to forget which Picasso was at which museum. MuseumLog is the diary I should've been keeping all along — now my whole twenties have polaroids.</p>
+      <div class="quote-attr">
+        <div class="quote-name" id="quote-name">Sarah R.</div>
+        <span id="quote-role">Curator's assistant, London</span>
+      </div>
+    </div>
+
+    <div class="testi-arrows">
+      <button class="arrow" id="prev" aria-label="Previous">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <button class="arrow" id="next" aria-label="Next">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Free tool: t-shirt designer ───── -->
+<section class="tool" id="tour">
+  <div class="container">
+    <div class="tool-head">
+      <span class="tool-tag">Free tool</span>
+      <h2>A band t-shirt, but for <em>galleries.</em></h2>
+      <p class="tool-sub">
+        Add the museums you've been to. Pick a colour. Download the mockup.
+        Be the first to know when the print run drops.
+      </p>
+    </div>
+
+    <div class="designer-grid">
+      <!-- LEFT — controls -->
+      <div>
+        <div class="panel">
+          <h3>Tour name &amp; year</h3>
+          <div class="meta-input">
+            <input type="text" id="tour-title" class="text-input" value="World Tour" placeholder="World Tour"/>
+            <input type="text" id="tour-year" class="text-input" value="2026" placeholder="2026"/>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Museums</h3>
+          <div class="input-row">
+            <input type="text" id="tour-search" class="text-input" placeholder="Search Tate, MoMA, Pompidou…" autocomplete="off"/>
+            <button class="add-btn" id="tour-add-custom" type="button">Add</button>
+          </div>
+          <div class="suggestions" id="tour-suggestions"></div>
+          <ul class="museum-list" id="tour-list"></ul>
+          <div class="empty-list" id="tour-empty">No museums yet — start typing above.</div>
+        </div>
+        <div class="panel">
+          <h3>Shirt colour</h3>
+          <div class="colour-row" id="tour-colour-row">
+            <div class="colour-swatch active" data-colour="white" title="Bone"></div>
+            <div class="colour-swatch" data-colour="cream" title="Cream"></div>
+            <div class="colour-swatch" data-colour="black" title="Black"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT — preview -->
+      <div class="stage">
+        <div class="tshirt-wrap">
+          <div class="tshirt-tabs">
+            <button class="tshirt-tab active" data-side="back">Back</button>
+            <button class="tshirt-tab" data-side="front">Front</button>
+          </div>
+          <div id="capture">
+            <div class="tshirt-stage" id="tshirt-stage">
+              <svg viewBox="0 0 480 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="8"/>
+                  </filter>
+                </defs>
+                <ellipse cx="240" cy="566" rx="180" ry="14" fill="rgba(0,0,0,0.10)" filter="url(#shadow)"/>
+                <path id="shirt-path" d="M 60 130 L 30 165 L 60 230 L 90 215 L 90 555 Q 90 565 100 565 L 380 565 Q 390 565 390 555 L 390 215 L 420 230 L 450 165 L 420 130 L 320 90 C 320 130, 280 145, 240 145 C 200 145, 160 130, 160 90 Z"
+                  fill="#f5f3ee" stroke="#cdc7b8" stroke-width="1"/>
+                <path d="M 160 90 C 180 110, 220 120, 240 120 C 260 120, 300 110, 320 90"
+                  fill="none" stroke="#cdc7b8" stroke-width="1.5"/>
+                <path d="M 90 215 L 120 230 L 120 555" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+                <path d="M 390 215 L 360 230 L 360 555" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+              </svg>
+              <div class="tour-art back-art" id="tour-back-art">
+                <div class="stamp">est. 2026</div>
+                <div class="title" id="tour-back-title">World Tour</div>
+                <div class="year" id="tour-back-year">2026</div>
+                <div class="divider"></div>
+                <div id="tour-back-museums"></div>
+              </div>
+              <div class="tour-art" id="tour-front-art" style="display:none">
+                <div style="font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:clamp(20px,2.4vw,28px);margin-bottom:8px">MuseumLog</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.18em;opacity:0.6">est. 2026 · london</div>
+              </div>
+              <div class="footer-mark">museumlog.app / tour</div>
+            </div>
+          </div>
+          <div class="cta-row">
+            <button class="pill" id="tour-download-btn">Download mockup</button>
+            <button class="pill outline" id="tour-copy-btn">Copy share link</button>
+          </div>
+        </div>
+        <div class="preorder">
+          <h3>Print run · coming soon.</h3>
+          <p>Add your email and we'll let you know the moment the first run drops. Limited numbered editions, screen-printed, 100% organic cotton.</p>
+          <form class="email-form" id="tour-email-form">
+            <input type="email" id="tour-email" placeholder="you@email.com" required/>
+            <button type="submit">Notify me</button>
+          </form>
+          <small>No marketing spam — just the launch and any future drops. Unsubscribe with one tap.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="tour-toast"></div>
+
+<!-- ───── FAQ ───── -->
+<section class="faq">
+  <div class="container">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">What is MuseumLog?
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>MuseumLog is an iPhone app for keeping a beautifully illustrated log of every museum and gallery you visit — with photos, ratings, exhibitions, companions, and the favourite piece you saw. Think of it as Letterboxd, but for art.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How does it work?
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Open the app on the way home, tap Add Visit, pick the museum (we have a built-in atlas of the big ones), drop your photos in, and rate it. The whole entry takes about thirty seconds.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is it free?
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Yes. Logging is free forever — no caps on visits or photos. MuseumLog Pro unlocks themes, fonts, the wireframe globe, share cards, and Home Screen widgets for $19.99/year or $39.99 lifetime.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Does it sync between my devices?
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Your logbook syncs through your private iCloud automatically. Anthropic, Apple, and we never see your visits — they live in your iCloud, encrypted.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is there an Android app?
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a"><p>Not yet. We're iPhone-first while we get the experience right. Sign up for the newsletter and we'll let you know when Android lands.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Footer ───── -->
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-left">
+      <div class="brand">
+        <span class="app-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9.5L12 4l9 5.5"/>
+            <path d="M5 11v8M9 11v8M15 11v8M19 11v8"/>
+            <path d="M3 21h18"/>
+          </svg>
+        </span>
+        MuseumLog
+      </div>
+      <div class="footer-tag">A logbook for your museum visits.</div>
+      <div class="footer-build">Built with ❤ in London.</div>
+      <div class="footer-copy">Copyright © 2026 MuseumLog. All rights reserved.</div>
+    </div>
+    <div class="footer-right">
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="mailto:hello@museumlog.app">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    q.addEventListener('click', () => {
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => o !== item && o.classList.remove('open'));
+      item.classList.toggle('open', !open);
+    });
+  });
+
+  // Testimonial carousel
+  const quotes = [
+    {
+      text: "I used to forget which Picasso was at which museum. MuseumLog is the diary I should've been keeping all along — now my whole twenties have polaroids.",
+      name: "Sarah R.",
+      role: "Curator's assistant, London"
+    },
+    {
+      text: "The flip-card thing is dangerous. I've spent more time scrolling my own logbook than I have actually going to galleries this month.",
+      name: "James M.",
+      role: "Architecture grad, Berlin"
+    },
+    {
+      text: "It made me realise I'd been to Pompidou six times and Tate twice and never the National. The passport view is the friendly nudge I needed.",
+      name: "Aisha B.",
+      role: "Painter, Paris"
+    },
+    {
+      text: "Finally — Letterboxd for the museum nerd. Beautifully drawn, doesn't ask me to make an account, just lets me log a visit and move on.",
+      name: "Daniel K.",
+      role: "Gallery educator, NYC"
+    }
+  ];
+  let idx = 0;
+  const $text = document.getElementById('quote-text');
+  const $name = document.getElementById('quote-name');
+  const $role = document.getElementById('quote-role');
+  function render() {
+    const q = quotes[idx];
+    $text.textContent = q.text;
+    $name.textContent = q.name;
+    $role.textContent = q.role;
+  }
+  document.getElementById('next').addEventListener('click', () => { idx = (idx + 1) % quotes.length; render(); });
+  document.getElementById('prev').addEventListener('click', () => { idx = (idx - 1 + quotes.length) % quotes.length; render(); });
+</script>
+
+
+<script>
+// ─── Free tool: t-shirt designer logic ───
+(function() {
+  const ATLAS = [
+    { name: "Louvre", city: "Paris", country: "fr" },
+    { name: "Centre Pompidou", city: "Paris", country: "fr" },
+    { name: "Musée d'Orsay", city: "Paris", country: "fr" },
+    { name: "Musée de l'Orangerie", city: "Paris", country: "fr" },
+    { name: "Picasso Museum", city: "Paris", country: "fr" },
+    { name: "Fondation Louis Vuitton", city: "Paris", country: "fr" },
+    { name: "British Museum", city: "London", country: "gb" },
+    { name: "Tate Modern", city: "London", country: "gb" },
+    { name: "Tate Britain", city: "London", country: "gb" },
+    { name: "Tate Liverpool", city: "Liverpool", country: "gb" },
+    { name: "National Gallery", city: "London", country: "gb" },
+    { name: "National Portrait Gallery", city: "London", country: "gb" },
+    { name: "Natural History Museum", city: "London", country: "gb" },
+    { name: "Victoria and Albert Museum", city: "London", country: "gb" },
+    { name: "Sir John Soane's Museum", city: "London", country: "gb" },
+    { name: "Design Museum", city: "London", country: "gb" },
+    { name: "Saatchi Gallery", city: "London", country: "gb" },
+    { name: "Imperial War Museum", city: "London", country: "gb" },
+    { name: "Metropolitan Museum of Art", city: "New York", country: "us" },
+    { name: "MoMA", city: "New York", country: "us" },
+    { name: "Whitney Museum", city: "New York", country: "us" },
+    { name: "Guggenheim Museum", city: "New York", country: "us" },
+    { name: "Frick Collection", city: "New York", country: "us" },
+    { name: "MoMA PS1", city: "New York", country: "us" },
+    { name: "National Gallery of Art", city: "Washington DC", country: "us" },
+    { name: "Art Institute of Chicago", city: "Chicago", country: "us" },
+    { name: "Getty Center", city: "Los Angeles", country: "us" },
+    { name: "LACMA", city: "Los Angeles", country: "us" },
+    { name: "SFMOMA", city: "San Francisco", country: "us" },
+    { name: "Vatican Museums", city: "Vatican City", country: "va" },
+    { name: "Galleria degli Uffizi", city: "Florence", country: "it" },
+    { name: "Galleria dell'Accademia", city: "Florence", country: "it" },
+    { name: "Pinacoteca di Brera", city: "Milan", country: "it" },
+    { name: "Rijksmuseum", city: "Amsterdam", country: "nl" },
+    { name: "Van Gogh Museum", city: "Amsterdam", country: "nl" },
+    { name: "Stedelijk Museum", city: "Amsterdam", country: "nl" },
+    { name: "Mauritshuis", city: "The Hague", country: "nl" },
+    { name: "Reina Sofía", city: "Madrid", country: "es" },
+    { name: "Museo del Prado", city: "Madrid", country: "es" },
+    { name: "Thyssen-Bornemisza", city: "Madrid", country: "es" },
+    { name: "Pergamon Museum", city: "Berlin", country: "de" },
+    { name: "Hamburger Bahnhof", city: "Berlin", country: "de" },
+    { name: "Neue Nationalgalerie", city: "Berlin", country: "de" },
+    { name: "Belvedere", city: "Vienna", country: "at" },
+    { name: "Albertina", city: "Vienna", country: "at" },
+    { name: "Kunsthistorisches Museum", city: "Vienna", country: "at" },
+    { name: "Hermitage", city: "Saint Petersburg", country: "ru" },
+    { name: "Tokyo National Museum", city: "Tokyo", country: "jp" },
+    { name: "Mori Art Museum", city: "Tokyo", country: "jp" },
+    { name: "teamLab Borderless", city: "Tokyo", country: "jp" },
+    { name: "National Museum of Korea", city: "Seoul", country: "kr" },
+    { name: "M+", city: "Hong Kong", country: "hk" }
+  ];
+  const CITY_ABBR = { "Washington DC": "DC", "Saint Petersburg": "St. Petersburg", "Los Angeles": "LA", "San Francisco": "SF" };
+
+  const state = { museums: [], colour: "white", side: "back", title: "World Tour", year: "2026" };
+
+  const $search = document.getElementById('tour-search');
+  const $sugg = document.getElementById('tour-suggestions');
+  const $list = document.getElementById('tour-list');
+  const $empty = document.getElementById('tour-empty');
+  const $title = document.getElementById('tour-title');
+  const $year = document.getElementById('tour-year');
+  const $colourRow = document.getElementById('tour-colour-row');
+  const $backArt = document.getElementById('tour-back-art');
+  const $frontArt = document.getElementById('tour-front-art');
+  const $backTitle = document.getElementById('tour-back-title');
+  const $backYear = document.getElementById('tour-back-year');
+  const $backMuseums = document.getElementById('tour-back-museums');
+  const $shirt = document.getElementById('shirt-path');
+  const $tabs = document.querySelectorAll('.tshirt-tab');
+  const $toast = document.getElementById('tour-toast');
+
+  function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function toast(msg) {
+    $toast.textContent = msg;
+    $toast.classList.add('show');
+    clearTimeout($toast._t);
+    $toast._t = setTimeout(() => $toast.classList.remove('show'), 2400);
+  }
+
+  function renderList() {
+    $list.innerHTML = '';
+    if (state.museums.length === 0) {
+      $empty.style.display = 'block';
+    } else {
+      $empty.style.display = 'none';
+      state.museums.forEach((m, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span><span class="city">${escapeHtml(m.city)}</span> · ${escapeHtml(m.name)}</span><button class="remove-btn" aria-label="Remove">×</button>`;
+        li.querySelector('.remove-btn').addEventListener('click', () => {
+          state.museums.splice(i, 1);
+          renderList(); renderTshirt();
+        });
+        $list.appendChild(li);
+      });
+    }
+  }
+
+  function renderTshirt() {
+    const palette = {
+      white: { fill: "#f5f3ee", stroke: "#cdc7b8", dark: false },
+      cream: { fill: "#e6dbc4", stroke: "#bfae87", dark: false },
+      black: { fill: "#111111", stroke: "#000", dark: true }
+    };
+    const p = palette[state.colour];
+    $shirt.setAttribute('fill', p.fill);
+    $shirt.setAttribute('stroke', p.stroke);
+    $backArt.classList.toggle('is-dark', p.dark);
+    $frontArt.classList.toggle('is-dark', p.dark);
+    document.querySelector('#tour .footer-mark').style.color = p.dark ? '#ece6d6' : '#111';
+    document.querySelector('#tour .footer-mark').style.opacity = p.dark ? 0.6 : 0.55;
+
+    $backTitle.textContent = state.title || 'World Tour';
+    $backYear.textContent = state.year || '2026';
+
+    $backMuseums.innerHTML = '';
+    state.museums.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'museum';
+      const c = CITY_ABBR[m.city] || m.city;
+      div.innerHTML = `<span class="city">${escapeHtml(c)}</span> ${escapeHtml(m.name)}`;
+      $backMuseums.appendChild(div);
+    });
+    if (state.museums.length === 0) {
+      $backMuseums.innerHTML = '<div class="museum" style="opacity:0.45"><span class="city">London</span> Tate Modern</div><div class="museum" style="opacity:0.30"><span class="city">Paris</span> Centre Pompidou</div><div class="museum" style="opacity:0.18"><span class="city">New York</span> MoMA</div>';
+    }
+    $backArt.style.display = state.side === 'back' ? 'block' : 'none';
+    $frontArt.style.display = state.side === 'front' ? 'block' : 'none';
+  }
+
+  function showSuggestions(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) { $sugg.classList.remove('show'); return; }
+    const matches = ATLAS
+      .filter(m => !state.museums.some(s => s.name === m.name))
+      .filter(m => m.name.toLowerCase().includes(q) || m.city.toLowerCase().includes(q))
+      .slice(0, 8);
+    if (matches.length === 0) { $sugg.classList.remove('show'); return; }
+    $sugg.innerHTML = matches.map(m =>
+      `<div class="suggestion" data-name="${escapeHtml(m.name)}" data-city="${escapeHtml(m.city)}" data-country="${m.country}"><span>${escapeHtml(m.name)}</span><span class="city">${escapeHtml(m.city)}</span></div>`
+    ).join('');
+    $sugg.classList.add('show');
+    $sugg.querySelectorAll('.suggestion').forEach(s => {
+      s.addEventListener('click', () => {
+        addMuseum({ name: s.dataset.name, city: s.dataset.city, country: s.dataset.country });
+        $search.value = '';
+        $sugg.classList.remove('show');
+        $search.focus();
+      });
+    });
+  }
+
+  function addMuseum(m) {
+    if (state.museums.some(x => x.name === m.name)) return;
+    state.museums.push(m);
+    renderList();
+    renderTshirt();
+  }
+
+  $search.addEventListener('input', e => showSuggestions(e.target.value));
+  $search.addEventListener('focus', e => { if (e.target.value) showSuggestions(e.target.value); });
+  $search.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && $search.value.trim()) {
+      e.preventDefault();
+      const exact = ATLAS.find(m => m.name.toLowerCase() === $search.value.trim().toLowerCase());
+      if (exact) addMuseum(exact);
+      else addMuseum({ name: $search.value.trim(), city: '—', country: '' });
+      $search.value = '';
+      $sugg.classList.remove('show');
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#tour-search') && !e.target.closest('#tour-suggestions')) $sugg.classList.remove('show');
+  });
+  document.getElementById('tour-add-custom').addEventListener('click', () => {
+    if (!$search.value.trim()) return;
+    const exact = ATLAS.find(m => m.name.toLowerCase() === $search.value.trim().toLowerCase());
+    addMuseum(exact || { name: $search.value.trim(), city: '—', country: '' });
+    $search.value = '';
+    $sugg.classList.remove('show');
+  });
+  $title.addEventListener('input', e => { state.title = e.target.value; renderTshirt(); });
+  $year.addEventListener('input', e => { state.year = e.target.value; renderTshirt(); });
+  $colourRow.addEventListener('click', e => {
+    const sw = e.target.closest('.colour-swatch');
+    if (!sw) return;
+    document.querySelectorAll('#tour .colour-swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+    state.colour = sw.dataset.colour;
+    renderTshirt();
+  });
+  $tabs.forEach(t => t.addEventListener('click', () => {
+    $tabs.forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    state.side = t.dataset.side;
+    renderTshirt();
+  }));
+
+  document.getElementById('tour-download-btn').addEventListener('click', async () => {
+    toast('Rendering mockup…');
+    const node = document.getElementById('capture');
+    try {
+      const canvas = await html2canvas(node, { backgroundColor: null, scale: 3, useCORS: true, logging: false });
+      const link = document.createElement('a');
+      const stamp = (state.title || 'tour').toLowerCase().replace(/\s+/g, '-');
+      link.download = `museumlog-${stamp}-${state.year || ''}-${state.side}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast('Downloaded — share it anywhere.');
+    } catch (err) {
+      toast('Couldn\'t render — try again.');
+      console.error(err);
+    }
+  });
+
+  document.getElementById('tour-copy-btn').addEventListener('click', async () => {
+    const params = new URLSearchParams();
+    params.set('t', state.title);
+    params.set('y', state.year);
+    params.set('c', state.colour);
+    params.set('m', state.museums.map(m => m.name).join('|'));
+    const url = `${location.origin}${location.pathname}?${params.toString()}#tour`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast('Share link copied to clipboard.');
+    } catch {
+      prompt('Share link:', url);
+    }
+  });
+
+  document.getElementById('tour-email-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('tour-email').value;
+    console.log('preorder email:', email, state);
+    toast(`Thanks — we'll email ${email} when it drops.`);
+    document.getElementById('tour-email').value = '';
+  });
+
+  (function loadFromUrl() {
+    const p = new URLSearchParams(location.search);
+    if (p.get('t')) { state.title = p.get('t'); $title.value = state.title; }
+    if (p.get('y')) { state.year = p.get('y'); $year.value = state.year; }
+    if (p.get('c')) {
+      state.colour = p.get('c');
+      document.querySelectorAll('#tour .colour-swatch').forEach(s => {
+        s.classList.toggle('active', s.dataset.colour === state.colour);
+      });
+    }
+    if (p.get('m')) {
+      p.get('m').split('|').filter(Boolean).forEach(name => {
+        const found = ATLAS.find(x => x.name === name);
+        if (found) state.museums.push(found);
+        else state.museums.push({ name, city: '—', country: '' });
+      });
+    }
+  })();
+
+  renderList();
+  renderTshirt();
+})();
+</script>
+
+</body>
+</html>
