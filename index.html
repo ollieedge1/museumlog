@@ -30,7 +30,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="theme-color" content="#3564d8" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,9 +47,15 @@
     --hairline: #e6e6e6;
     --bg: #ffffff;
     --bg-alt: #f5f5f5;
-    --accent: #f5482a;
-    --lavender: #efeaff;
-    --lavender-soft: #f6f3ff;
+    /* Brand accent — was biro red (#f5482a) while the leather logbook icon
+       was live. Site is now black + white + the icon's blue (used only
+       inside the icon itself). Accent aliases to ink so existing rules
+       that reference --accent automatically resolve to black without
+       needing a rename sweep. */
+    --accent: var(--ink);
+    --accent-soft: rgba(17,17,17,0.08);
+    --lavender: #f5f5f7;
+    --lavender-soft: #fafafb;
     --shadow: 0 24px 60px rgba(17,17,17,0.06);
   }
 
@@ -177,21 +183,22 @@
     flex-wrap: wrap;
     margin-bottom: 14px;
   }
+  /* Official Apple-supplied SVG badge (black). The wrapping anchor is
+     just a tap target — no chrome, the badge image is the chrome.
+     Apple's marketing-resources guidelines prohibit modifying the badge
+     so we don't recolour, restyle, or apply borders. The hover state
+     is a 2px lift, allowed because it doesn't touch the badge artwork. */
   .store-badge {
-    background: var(--ink);
-    color: #fff;
-    border-radius: 12px;
-    padding: 10px 18px;
     display: inline-flex;
-    align-items: center;
-    gap: 12px;
     text-decoration: none;
     transition: transform 0.15s ease;
   }
   .store-badge:hover { transform: translateY(-2px); }
-  .store-badge svg { width: 24px; height: 24px; flex-shrink: 0; }
-  .store-badge .small { font-size: 10px; opacity: 0.85; line-height: 1.1; }
-  .store-badge .big { font-size: 17px; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; }
+  .store-badge img {
+    height: 60px;
+    width: auto;
+    display: block;
+  }
   .web-pill {
     display: inline-flex;
     align-items: center;
@@ -954,7 +961,7 @@
     padding: 4px 8px;
     border-radius: 6px;
   }
-  .remove-btn:hover { color: var(--accent); background: rgba(245,72,42,0.08); }
+  .remove-btn:hover { color: var(--accent); background: var(--accent-soft); }
   .empty-list {
     color: var(--muted);
     font-size: 13px;
@@ -1236,13 +1243,7 @@
 
     <div class="badges" id="download">
       <a href="mailto:hello@museumlog.app?subject=Notify%20me%20when%20Museum%20Log%20launches&body=Let%20me%20know%20the%20moment%20Museum%20Log%20is%20live%20on%20the%20App%20Store.%20Thanks!" class="store-badge" aria-label="Get notified when Museum Log launches on the App Store">
-        <svg viewBox="0 0 24 24" fill="white" aria-hidden="true">
-          <path d="M16.365 1.43c0 1.14-.41 2.23-1.16 3.08-.85.96-2.21 1.7-3.51 1.6-.16-1.13.39-2.3 1.13-3.13.84-.95 2.27-1.66 3.54-1.55zm4.7 17.55c-.66 1.55-1.45 2.95-2.79 4.78-.93 1.27-2.2 2.85-3.78 2.86-1.4 0-1.76-.92-3.66-.91-1.9.01-2.29.93-3.69.92-1.58-.01-2.78-1.43-3.71-2.7C2.9 21.36 2 17.6 3.74 14.94c1.18-1.79 3.06-2.93 4.85-2.93 1.7 0 2.79.93 3.97.93 1.16 0 2.04-.94 3.97-.94 1.5.01 3.06.81 4.18 2.21-3.66 2-3.07 7.21-.7 8.77z"/>
-        </svg>
-        <span>
-          <span class="small">Download on the</span><br/>
-          <span class="big">App Store</span>
-        </span>
+        <img src="app-store-badge.svg" alt="Download on the App Store" width="180" height="60" />
       </a>
     </div>
 
@@ -1391,7 +1392,7 @@
         <div class="ml-vd-section">
           <div class="ml-vd-row">
             <span class="val">Red biro</span>
-            <div style="width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 1px var(--ink)"></div>
+            <div style="width:18px;height:18px;border-radius:50%;background:#3564d8;border:2px solid #fff;box-shadow:0 0 0 1px var(--ink)"></div>
           </div>
           <div class="ml-vd-row">
             <span style="color:var(--muted)">Blue biro</span>
