@@ -4,11 +4,41 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Museum Log — A logbook for your museum visits</title>
-<meta name="description" content="Museum Log turns every gallery trip into a beautifully illustrated entry — photos, companions, exhibitions, and the favourite piece you won't shut up about." />
+<meta name="description" content="A beautifully illustrated logbook for every gallery you visit — photos, companions, exhibitions, the favourite piece. Letterboxd, but for museums." />
+
+<!-- Canonical -->
+<link rel="canonical" href="https://museumlog.app/" />
+
+<!-- Open Graph (Facebook, iMessage, Slack, Discord, LinkedIn) -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Museum Log" />
+<meta property="og:title" content="Museum Log — A logbook for your museum visits" />
+<meta property="og:description" content="Letterboxd, but for museums. Every gallery, photographed and remembered." />
+<meta property="og:image" content="https://museumlog.app/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://museumlog.app/" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Museum Log" />
+<meta name="twitter:description" content="Letterboxd, but for museums. Every gallery, photographed and remembered." />
+<meta name="twitter:image" content="https://museumlog.app/og-image.png" />
+
+<!-- Favicons -->
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#ffffff" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- html2canvas — only the t-shirt designer at #tour uses it; defer so
+     it doesn't block first paint and only loads after the HTML parses. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root {
     --ink: #111111;
@@ -72,12 +102,10 @@
     width: 36px;
     height: 36px;
     border-radius: 9px;
-    background: var(--ink);
-    display: grid;
-    place-items: center;
+    overflow: hidden;
     box-shadow: 0 2px 8px rgba(17,17,17,0.18);
   }
-  .app-icon svg { width: 22px; height: 22px; }
+  .app-icon img { width: 100%; height: 100%; display: block; }
   .pill {
     display: inline-flex;
     align-items: center;
@@ -105,13 +133,11 @@
     width: 96px;
     height: 96px;
     border-radius: 22px;
-    background: var(--ink);
+    overflow: hidden;
     margin: 0 auto 14px;
-    display: grid;
-    place-items: center;
     box-shadow: 0 18px 40px rgba(17,17,17,0.18);
   }
-  .hero-icon svg { width: 56px; height: 56px; }
+  .hero-icon img { width: 100%; height: 100%; display: block; }
   .hero-app-label {
     font-size: 13px;
     color: var(--ink);
@@ -1157,8 +1183,23 @@
     .phone { width: 200px; }
     .hero { padding: 56px 0 30px; }
     .hero-icon { width: 76px; height: 76px; border-radius: 18px; }
-    .hero-icon svg { width: 44px; height: 44px; }
   }
+
+  /* Hero secondary CTA — quiet text link sitting below the App Store
+     badge. Replaces the previously loud bordered pill that competed
+     with the primary download action. */
+  .hero-secondary {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .hero-secondary:hover { color: var(--ink); }
+
 </style>
 </head>
 <body>
@@ -1169,15 +1210,11 @@
     <a href="#" class="brand">
       <span class="app-icon" aria-hidden="true">
         <!-- museum / columns glyph -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9.5L12 4l9 5.5"/>
-          <path d="M5 11v8M9 11v8M15 11v8M19 11v8"/>
-          <path d="M3 21h18"/>
-        </svg>
+<picture><source srcset="app-icon.webp" type="image/webp" /><img src="app-icon.png" alt="Museum Log" width="96" height="96" loading="eager" /></picture>
       </span>
       Museum Log
     </a>
-    <a href="#download" class="pill">Download now</a>
+    <a href="mailto:hello@museumlog.app?subject=Notify%20me%20when%20Museum%20Log%20launches&body=Let%20me%20know%20the%20moment%20Museum%20Log%20is%20live%20on%20the%20App%20Store.%20Thanks!" class="pill">Notify me on launch</a>
   </div>
 </nav>
 
@@ -1185,24 +1222,20 @@
 <section class="hero">
   <div class="container">
     <div class="hero-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9.5L12 4l9 5.5"/>
-        <path d="M5 11v8M9 11v8M15 11v8M19 11v8"/>
-        <path d="M3 21h18"/>
-      </svg>
+<picture><source srcset="app-icon.webp" type="image/webp" /><img src="app-icon.png" alt="Museum Log" width="96" height="96" loading="eager" /></picture>
     </div>
     <div class="hero-app-label">Museum Log</div>
 
     <h1>Every gallery you've ever <em>loved.</em></h1>
 
     <p class="hero-sub">
-      Museum Log turns each visit into a beautifully illustrated entry —
-      photos, companions, exhibitions, and the favourite piece you won't
-      shut up about. Letterboxd, but for museums.
+      A beautifully illustrated logbook for every gallery you visit —
+      photos, companions, exhibitions, the favourite piece.
+      Letterboxd, but for museums.
     </p>
 
     <div class="badges" id="download">
-      <a href="#" class="store-badge" aria-label="Download on the App Store">
+      <a href="mailto:hello@museumlog.app?subject=Notify%20me%20when%20Museum%20Log%20launches&body=Let%20me%20know%20the%20moment%20Museum%20Log%20is%20live%20on%20the%20App%20Store.%20Thanks!" class="store-badge" aria-label="Get notified when Museum Log launches on the App Store">
         <svg viewBox="0 0 24 24" fill="white" aria-hidden="true">
           <path d="M16.365 1.43c0 1.14-.41 2.23-1.16 3.08-.85.96-2.21 1.7-3.51 1.6-.16-1.13.39-2.3 1.13-3.13.84-.95 2.27-1.66 3.54-1.55zm4.7 17.55c-.66 1.55-1.45 2.95-2.79 4.78-.93 1.27-2.2 2.85-3.78 2.86-1.4 0-1.76-.92-3.66-.91-1.9.01-2.29.93-3.69.92-1.58-.01-2.78-1.43-3.71-2.7C2.9 21.36 2 17.6 3.74 14.94c1.18-1.79 3.06-2.93 4.85-2.93 1.7 0 2.79.93 3.97.93 1.16 0 2.04-.94 3.97-.94 1.5.01 3.06.81 4.18 2.21-3.66 2-3.07 7.21-.7 8.77z"/>
         </svg>
@@ -1213,10 +1246,7 @@
       </a>
     </div>
 
-    <a href="#tour" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:999px;padding:10px 20px;font-size:14px;font-weight:600;text-decoration:none;transition:transform 0.15s ease;" onmouseover="this.style.background='var(--ink)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--ink)'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/></svg>
-      Free tool — design your tour t-shirt
-    </a>
+    <a href="#tour" class="hero-secondary">Or design your tour shirt →</a>
 
     <!-- hero phone -->
     <div class="hero-phone-wrap">
@@ -1386,13 +1416,15 @@
 <!-- ───── Trusted by ───── -->
 <section class="trusted">
   <div class="container">
-    <div class="label">trusted by curators &amp; gallery-goers at</div>
+    <div class="label">stamps for 130+ galleries — including</div>
     <div class="trusted-row">
       <span class="trusted-name">Tate</span>
       <span class="trusted-name">MoMA</span>
       <span class="trusted-name">Pompidou</span>
-      <span class="trusted-name">Guggenheim</span>
-      <span class="trusted-name">Reina Sofía</span>
+      <span class="trusted-name">Louisiana</span>
+      <span class="trusted-name">Inhotim</span>
+      <span class="trusted-name">M+</span>
+      <span class="trusted-name">MONA</span>
     </div>
   </div>
 </section>
@@ -1497,26 +1529,17 @@
 <!-- ───── Testimonials ───── -->
 <section class="testimonials">
   <div class="container">
-    <h2>What our gallery-goers say</h2>
+    <h2>Why I built this.</h2>
 
     <div id="testi-stage">
       <svg class="quote-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M7 17h3l2-4V7H6v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z"/>
       </svg>
-      <p class="quote-text" id="quote-text">I used to forget which Picasso was at which museum. Museum Log is the diary I should've been keeping all along — now my whole twenties have polaroids.</p>
+      <p class="quote-text">I'd been to the Tate eight times and couldn't remember a single piece I'd loved on the second visit. The Letterboxd-for-galleries diary I always wanted didn't exist, so I built it. Every visit is now an illustrated entry — the photo I took, who came with me, the exhibition that was on, the one piece that stayed with me.</p>
       <div class="quote-attr">
-        <div class="quote-name" id="quote-name">Sarah R.</div>
-        <span id="quote-role">Curator's assistant, London</span>
+        <div class="quote-name">Ollie Edge</div>
+        <span>Founder, Museum Log · London</span>
       </div>
-    </div>
-
-    <div class="testi-arrows">
-      <button class="arrow" id="prev" aria-label="Previous">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      </button>
-      <button class="arrow" id="next" aria-label="Next">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
     </div>
   </div>
 </section>
@@ -1648,7 +1671,7 @@
         <button class="faq-q">Does it sync between my devices?
           <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-a"><p>Your logbook syncs through your private iCloud automatically. Anthropic, Apple, and we never see your visits — they live in your iCloud, encrypted.</p></div>
+        <div class="faq-a"><p>Your logbook syncs through your private iCloud automatically. No one at Museum Log ever sees your visits — they live in your iCloud, private to you.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Is there an Android app?
@@ -1666,11 +1689,7 @@
     <div class="footer-left">
       <div class="brand">
         <span class="app-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9.5L12 4l9 5.5"/>
-            <path d="M5 11v8M9 11v8M15 11v8M19 11v8"/>
-            <path d="M3 21h18"/>
-          </svg>
+<picture><source srcset="app-icon.webp" type="image/webp" /><img src="app-icon.png" alt="Museum Log" width="96" height="96" loading="eager" /></picture>
         </span>
         Museum Log
       </div>
@@ -1699,40 +1718,6 @@
   });
 
   // Testimonial carousel
-  const quotes = [
-    {
-      text: "I used to forget which Picasso was at which museum. Museum Log is the diary I should've been keeping all along — now my whole twenties have polaroids.",
-      name: "Sarah R.",
-      role: "Curator's assistant, London"
-    },
-    {
-      text: "The flip-card thing is dangerous. I've spent more time scrolling my own logbook than I have actually going to galleries this month.",
-      name: "James M.",
-      role: "Architecture grad, Berlin"
-    },
-    {
-      text: "It made me realise I'd been to Pompidou six times and Tate twice and never the National. The passport view is the friendly nudge I needed.",
-      name: "Aisha B.",
-      role: "Painter, Paris"
-    },
-    {
-      text: "Finally — Letterboxd for the museum nerd. Beautifully drawn, doesn't ask me to make an account, just lets me log a visit and move on.",
-      name: "Daniel K.",
-      role: "Gallery educator, NYC"
-    }
-  ];
-  let idx = 0;
-  const $text = document.getElementById('quote-text');
-  const $name = document.getElementById('quote-name');
-  const $role = document.getElementById('quote-role');
-  function render() {
-    const q = quotes[idx];
-    $text.textContent = q.text;
-    $name.textContent = q.name;
-    $role.textContent = q.role;
-  }
-  document.getElementById('next').addEventListener('click', () => { idx = (idx + 1) % quotes.length; render(); });
-  document.getElementById('prev').addEventListener('click', () => { idx = (idx - 1 + quotes.length) % quotes.length; render(); });
 </script>
 
 
